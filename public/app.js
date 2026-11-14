@@ -1,7 +1,4 @@
-/* ===== STEPPESHIELD — веб-приложение =====
-   Два режима хранения:
-   - cloud: развёрнуто на Cloudflare Pages, данные и вход через /api (D1), климат NASA и ИИ через сервер;
-   - local: превью или запуск без сервера, данные в браузере, ИИ через Claude (если доступен) или встроенный алгоритм. */
+
 (function () {
   "use strict";
   var C = SS.CROPS, R = SS.REGIONS;
@@ -645,7 +642,7 @@
 
       if (B.mode === "cloud") {
         logLine({ text: t("log.server"), spin: true });
-        return B.ai({ field: publicField(f), climate: climate, opt: A.opt, w: A.w, want: A.want, lang: lang }).then(function (j) {
+        return B.ai({ field: publicField(f), climate: climate, opt: A.opt, w: A.w, want: A.want, lang: lang, candidates: SS.topCandidates(mf, A.opt, A.w, A.want, 4) }).then(function (j) {
           (j.log || []).forEach(function (l) { logLine({ text: t("log.tested") + ": " + chainText(l.crops), score: l.total }); });
           var res = newResult(f, "ai", clim);
           Object.assign(res, j.result);
