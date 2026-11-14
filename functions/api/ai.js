@@ -1,9 +1,5 @@
 import { json, fail, readBody, getUser, cleanField, SS } from "../_lib/util.js";
 
-// ИИ-агроном. Два режима:
-//  1) Cloudflare Workers AI (бесплатный дневной лимит, binding AI в wrangler.toml) — по умолчанию;
-//  2) Claude API, если задан секрет ANTHROPIC_API_KEY: Claude сам проверяет варианты инструментом stress_test.
-// Цифры всегда считает наша модель (SS.stressTest), ИИ выбирает стратегии и объясняет выбор.
 
 const WORKERS_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const MAX_ROUNDS = 8;
