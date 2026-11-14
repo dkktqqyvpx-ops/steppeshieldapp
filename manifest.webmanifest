@@ -1,0 +1,15 @@
+{
+  "name": "STEPPESHIELD — планировщик севооборота",
+  "short_name": "STEPPESHIELD",
+  "description": "ИИ-агроном и стресс-тест севооборота на данных NASA для фермеров Казахстана.",
+  "start_url": "./#fields",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F0E7",
+  "theme_color": "#173D2D",
+  "lang": "ru",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
