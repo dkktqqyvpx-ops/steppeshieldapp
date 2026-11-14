@@ -3,7 +3,7 @@ compatibility_date = "2025-06-01"
 pages_build_output_dir = "public"
 
 [[d1_databases]]
-binding = "DB"
+binding = "AI"
 database_name = "steppeshield"
 database_id = "debe979d-01e0-4a84-8aab-524144177f50"
 
