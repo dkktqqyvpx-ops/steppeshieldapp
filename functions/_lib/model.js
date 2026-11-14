@@ -1,4 +1,4 @@
-/* ===== STEPPESHIELD — агрономическая модель Rotation Stress Test ===== */
+ /* ===== STEPPESHIELD — агрономическая модель Rotation Stress Test ===== */
 var SS = (function () {
   // Запасной климат областей (центр области): T2M — средняя температура, °C; P — осадки, мм/мес; tmaxJul — средняя Tmax июля, °C.
   // Приближение к климатологии NASA POWER. Основной источник — живой запрос к NASA POWER по координатам поля (/api/nasa)
@@ -284,6 +284,29 @@ var SS = (function () {
     return chosen;
   }
 
+  // Лучшие варианты для ИИ: по per штук на каждый из трёх профилей, без повторов. Считается в браузере,
+  // чтобы серверу (с лимитом CPU) оставалось только перепроверить несколько вариантов.
+  function topCandidates(field, opt, w, want, per) {
+    var profiles = [w, { income: 30, water: 100, soil: 50, risk: 60 }, { income: 100, water: 30, soil: 40, risk: 40 }];
+    var out = [], used = {}, n = CROP_KEYS.length;
+    profiles.forEach(function (pw) {
+      var top = [];
+      for (var a = 0; a < n; a++) for (var b = 0; b < n; b++) for (var c = 0; c < n; c++) for (var d = 0; d < n; d++) {
+        var st = [CROP_KEYS[a], CROP_KEYS[b], CROP_KEYS[c], CROP_KEYS[d]], key = st.slice().sort().join();
+        if (used[key] || agroCheck(st, field, want)) continue;
+        var t = stressTest(st, field, opt, pw).total;
+        if (top.length < per || t > top[top.length - 1].t) {
+          if (top.some(function (x) { return x.key === key; })) continue;
+          top.push({ crops: st, t: t, key: key });
+          top.sort(function (x, y) { return y.t - x.t; });
+          if (top.length > per) top.pop();
+        }
+      }
+      top.forEach(function (x) { used[x.key] = 1; out.push(x.crops); });
+    });
+    return out;
+  }
+
   // Разбор файла NASA POWER (climatology или monthly) в {T, P, tmaxJul}.
   var MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   var DAYS = [31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -323,7 +346,7 @@ var SS = (function () {
   }
 
   return { REGIONS: REGIONS, SOILS: SOILS, CROPS: CROPS, CROP_KEYS: CROP_KEYS, scenarios: scenarios, run: run,
-    stressTest: stressTest, agroCheck: agroCheck, wantCheck: wantCheck, irrType: irrType, riceOk: riceOk, RICE_REGIONS: RICE_REGIONS, REGION_CROPS: REGION_CROPS, cropLevel: cropLevel, cropSuit: cropSuit, heatSum: heatSum, mainCrops: mainCrops, localPlan: localPlan, parseNasa: parseNasa, climateOf: climateOf, apiUrl: apiUrl };
+    stressTest: stressTest, agroCheck: agroCheck, wantCheck: wantCheck, irrType: irrType, riceOk: riceOk, RICE_REGIONS: RICE_REGIONS, REGION_CROPS: REGION_CROPS, cropLevel: cropLevel, cropSuit: cropSuit, heatSum: heatSum, mainCrops: mainCrops, localPlan: localPlan, topCandidates: topCandidates, parseNasa: parseNasa, climateOf: climateOf, apiUrl: apiUrl };
 })();
 
 /* ===== Промпт ИИ-агронома и разбор ответа (общие для браузера и сервера) ===== */
