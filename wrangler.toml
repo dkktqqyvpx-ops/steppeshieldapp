@@ -5,7 +5,7 @@ pages_build_output_dir = "public"
 [[d1_databases]]
 binding = "DB"
 database_name = "steppeshieldapp"
-database_id = "3f2a1b4c-5d6e-7f80-91a2-b3c4d5e6f708"
+database_id = "debe979d-01e0-4a84-8aab-524144177f50"
 
 [ai]
 binding="AI"
